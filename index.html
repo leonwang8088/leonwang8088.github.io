@@ -231,7 +231,7 @@ function update1(selectedVar) {
               .style("left", d3.event.pageX - 50 + "px")
               .style("top", d3.event.pageY - 70 + "px")
               .style("display", "inline-block")
-              .html((d.RegionName) + ": $" + (+d[selectedVar]));})
+              .html((d.RegionName) + ": $" + d3.format(",")(+d[selectedVar]));})
     		.on("mouseout", function(d){ tooltip1.style("display", "none");})
       .transition()
       .duration(1000)
@@ -253,6 +253,7 @@ update1('Average')
 This bar chart shows the average home price for each region of San Diego County as of June 30, 2020.
 Click on the bottons above the chart to see average home price for different bedroom count.
 </p>
+<small>Note: Missing data -> bar is absent. E.g. Boulevard doesn't have 1 bedroom data.</small>
 <!-- <div class="text">Average Home Price for Each Region in San Diego County</div> -->
 </div>
 
@@ -269,7 +270,7 @@ Click on the bottons above the chart to see average home price for different bed
 <script>
 
 // set the dimensions and margins of the graph
-var margin2 = {top: 50, right: 100, bottom: 100, left: 100},
+var margin2 = {top: 50, right: 300, bottom: 100, left: 100},
     width2 = 1060 - margin2.left - margin2.right,
     height2 = 600 - margin2.top - margin2.bottom;
 
@@ -351,7 +352,7 @@ bars2.enter()
 		  .style("left", d3.event.pageX - 50 + "px")
 		  .style("top", d3.event.pageY - 70 + "px")
 		  .style("display", "inline-block")
-		  .html((d.Bdrmcnt) + ": $" + (+d.Average));})
+		  .html((d.Bdrmcnt) + ": $" + d3.format(",")(+d.Average));})
 		.on("mouseout", function(d){ tooltip2.style("display", "none");})
   .transition()
   .duration(1000)
@@ -381,7 +382,7 @@ function update2(selectedGroup) {
               .style("left", d3.event.pageX - 50 + "px")
               .style("top", d3.event.pageY - 70 + "px")
               .style("display", "inline-block")
-              .html((d.Bdrmcnt) + ": $" + (+d[selectedGroup]));})
+              .html((d.Bdrmcnt) + ": $" + d3.format(",")(+d[selectedGroup]));})
     		.on("mouseout", function(d){ tooltip2.style("display", "none");})
       .transition()
       .duration(1000)
@@ -409,6 +410,7 @@ d3.select("#selectButton2").on("change", function(d) {
 This bar chart shows the average home price for different bedroom count as of June 30, 2020.
 Select the region in the drop-down list above the chart to see that region's home price.
 </p>
+<small>Note: Missing data -> bar is absent. E.g. Boulevard doesn't have 1 bedroom data.</small>
 </div>
 
 <div class="mySlides fade">
@@ -424,7 +426,7 @@ Select the region in the drop-down list above the chart to see that region's hom
 <script>
 
 // set the dimensions and margins of the graph
-var margin3 = {top: 50, right: 100, bottom: 100, left: 100},
+var margin3 = {top: 50, right: 300, bottom: 100, left: 100},
     width3 = 1060 - margin3.left - margin3.right,
     height3 = 600 - margin3.top - margin3.bottom;
 
@@ -571,7 +573,7 @@ d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/ma
 	  .attr("cx", x3(selectedData.DateTime))
 	  .attr("cy", height3)
 	focusText3_1
-	  .html("San Diego County: $" + selectedData.HomePrice)
+	  .html("San Diego County: $" + d3.format(",")(selectedData.HomePrice))
 	  .attr("x", x3(selectedData.DateTime)+15)
 	  .attr("y", y3(selectedData.HomePrice))
 	focusText3_0
@@ -675,11 +677,11 @@ d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/ma
 	  .attr("cx", x3(selectedData.DateTime))
 	  .attr("cy", height3)
 	focusText3_1
-	  .html("San Diego County: $" + averageData.HomePrice)
+	  .html("San Diego County: $" + d3.format(",")(averageData.HomePrice))
 	  .attr("x", x3(averageData.DateTime)+15)
 	  .attr("y", y3(averageData.HomePrice))
 	focusText3_2
-	  .html(selectedData.RegionName + ": $" + selectedData.HomePrice)
+	  .html(selectedData.RegionName + ": $" + d3.format(",")(selectedData.HomePrice))
 	  .attr("x", x3(selectedData.DateTime)+15)
 	  .attr("y", y3(selectedData.HomePrice))
 	focusText3_0
@@ -740,7 +742,7 @@ Select the region in the drop-down list above the chart to see that region's tre
 <script>
 
 // set the dimensions and margins of the graph
-var margin4 = {top: 50, right: 100, bottom: 100, left: 100},
+var margin4 = {top: 50, right: 300, bottom: 100, left: 100},
     width4 = 1060 - margin4.left - margin4.right,
     height4 = 600 - margin4.top - margin4.bottom;
 
@@ -899,7 +901,7 @@ d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/ma
 	  .attr("cx", x4(selectedData.DateTime))
 	  .attr("cy", height4)
 	focusText4_1
-	  .html("San Diego County: " + selectedData.MonthlyChange +"%")
+	  .html("San Diego County: " + d3.format(".3f")(selectedData.MonthlyChange) +"%")
 	  .attr("x", x4(selectedData.DateTime)+15)
 	  .attr("y", y4(selectedData.MonthlyChange))
 	focusText4_0
@@ -1015,11 +1017,11 @@ d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/ma
 	  .attr("cx", x4(selectedData.DateTime))
 	  .attr("cy", height4)
 	focusText4_1
-	  .html("San Diego County: " + averageData.MonthlyChange+"%")
+	  .html("San Diego County: " + d3.format(".3f")(averageData.MonthlyChange)+"%")
 	  .attr("x", x4(averageData.DateTime)+15)
 	  .attr("y", y4(averageData.MonthlyChange))
 	focusText4_2
-	  .html(selectedData.RegionName + ": " + selectedData.MonthlyChange+"%")
+	  .html(selectedData.RegionName + ": " + d3.format(".3f")(selectedData.MonthlyChange)+"%")
 	  .attr("x", x4(selectedData.DateTime)+15)
 	  .attr("y", y4(selectedData.MonthlyChange))
 	focusText4_0
