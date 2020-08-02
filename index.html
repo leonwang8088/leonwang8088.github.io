@@ -57,13 +57,14 @@ img {vertical-align: middle;}
 /* Caption text */
 .text {
   color: #0;
-  font-size: 22px;
-  font-weight: bold;
+  font-size: 12px;
+  <!-- font-weight: bold; -->
   padding: 8px 12px;
   position: absolute;
-  top: 40px;
+  top: 150px;
+  left: 350px;
   width: 100%;
-  text-align: center;
+  text-align: left;
 }
 
 /* Number text (1/4 etc) */
@@ -135,7 +136,6 @@ The home type includes single-family homes, condo and coops.
 The pages can be used to compare average home values for different regions and/or different bedroom counts, see historical trends and monthly changes. 
 The dataset was downloaded from Zillow (https://www.zillow.com/research/data/).
 </p>
-<!-- <div class="text">Average Home Price for Each Region in San Diego County</div> -->
 </div>
 <div class="mySlides fade">
   <div class="numbertext">2 / 5</div>
@@ -254,7 +254,7 @@ This bar chart shows the average home price for each region of San Diego County 
 Click on the bottons above the chart to see average home price for different bedroom count.
 </p>
 <small>Note: Missing data -> bar is absent. E.g. Boulevard doesn't have 1 bedroom data.</small>
-<!-- <div class="text">Average Home Price for Each Region in San Diego County</div> -->
+<div class="text">Rancho Santa Fe, Del Mar and Coronado<br>are top 3 most expensive regions in SD county.</div>
 </div>
 
 <div class="mySlides fade">
@@ -405,7 +405,7 @@ d3.select("#selectButton2").on("change", function(d) {
 })
 
 </script>
-<!-- <div class="text">Average Home Price for Different Bedroom Count</div> -->
+<div class="text">Average home price is approximately<br>proportional to bedroom count.</div>
 <p>
 This bar chart shows the average home price for different bedroom count as of June 30, 2020.
 Select the region in the drop-down list above the chart to see that region's home price.
@@ -726,7 +726,8 @@ d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/ma
 This plot shows the average home price trend over the last 10 years (June 2010 ~ June 2020).
 Select the region in the drop-down list above the chart to see that region's trend and compare it with San Diego County's.
 </p>
-<!-- <div class="text">Average Home Price Trend Over Last 10 Years</div> -->
+<div class="text">SD average home price ramped up<br>between 2012 and 2014,<br>then increased more slowly after 2014.</div>
+
 </div>
 
 <div class="mySlides fade">
@@ -1066,7 +1067,7 @@ d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/ma
 This plot shows the average home price monthly change over the last 10 years (June 2010 ~ June 2020).
 Select the region in the drop-down list above the chart to see that region's monthly change and compare it with San Diego County's.
 </p>
-<!-- <div class="text">Average Home Price Monthly Change Over Last 10 Years</div> -->
+<div class="text">SD average home price monthly change<br>is positive for most of time over last 10 years.</div>
 </div>
 
 
