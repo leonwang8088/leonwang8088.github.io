@@ -1,1 +1,1115 @@
-Hello World
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {box-sizing: border-box}
+body {font-family: Verdana, sans-serif; margin:0}
+.mySlides {display: none}
+img {vertical-align: middle;}
+
+/* Slideshow container */
+.slideshow-container {
+  max-width: 1000px;
+  position: relative;
+  margin: auto;
+}
+
+.toolTip {
+  position: absolute;
+  display: none;
+  min-width: 80px;
+  height: auto;
+  background: none repeat scroll 0 0 #ffffff;
+  border: 1px solid #6F257F;
+  padding: 14px;
+  text-align: center;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 16px;
+  margin-top: -22px;
+  color: white;
+  background-color: rgba(0,0,0,0.2);
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  background-color: rgba(0,0,0,0.8);
+}
+
+/* Caption text */
+.text {
+  color: #0;
+  font-size: 22px;
+  font-weight: bold;
+  padding: 8px 12px;
+  position: absolute;
+  top: 40px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Number text (1/4 etc) */
+.numbertext {
+  color: #0;
+  font-size: 12px;
+  padding: 8px 12px;
+  position: absolute;
+  top: 0;
+  right:0;
+  text-align: right;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+.active, .dot:hover {
+  background-color: #717171;
+}
+
+/* Fading animation */
+.fade {
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 1.5s;
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@-webkit-keyframes fade {
+  from {opacity: .4} 
+  to {opacity: 1}
+}
+
+@keyframes fade {
+  from {opacity: .4} 
+  to {opacity: 1}
+}
+
+/* On smaller screens, decrease text size */
+@media only screen and (max-width: 300px) {
+  .prev, .next,.text {font-size: 11px}
+}
+</style>
+</head>
+<body>
+
+<div class="slideshow-container">
+<div class="mySlides fade">
+<div class="numbertext">1 / 5</div>
+<h2>San Diego County's Home Price from 2010 to 2020</h2>
+
+<p>
+What is the latest home price of San Diego? Which region's home is most expensive? And how bedroom count affects the price? 
+How does the price change over the last 10 years? And in which year did the price change the most? ...
+</p>
+<p>
+The pages are designed to visualize San Diego County home price over the last 10 years on region basis. 
+And the answers to the above questions can be found from these pages.
+The home type includes single-family homes, condo and coops. 
+The pages can be used to compare average home values for different regions and/or different bedroom counts, see historical trends and monthly changes. 
+The dataset was downloaded from Zillow (https://www.zillow.com/research/data/).
+</p>
+<!-- <div class="text">Average Home Price for Each Region in San Diego County</div> -->
+</div>
+<div class="mySlides fade">
+  <div class="numbertext">2 / 5</div>
+  <!-- <img src="img_nature_wide.jpg" style="width:100%"> -->
+<h2>Average Home Price for Each Region in San Diego County as of June 30, 2020</h2>
+  <!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+<!-- Add buttons -->
+<button onclick="update1('Average')">Average</button>
+<button onclick="update1('OneBdrm')">1 Bedroom</button>
+<button onclick="update1('TwoBdrm')">2 Bedroom</button>
+<button onclick="update1('ThreeBdrm')">3 Bedroom</button>
+<button onclick="update1('FourBdrm')">4 Bedroom</button>
+<button onclick="update1('FiveBdrm')">5+ Bedroom</button>
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz1"></div>
+
+<script>
+
+// set the dimensions and margins of the graph
+var margin1 = {top: 50, right: 100, bottom: 100, left: 100},
+    width1 = 1060 - margin1.left - margin1.right,
+    height1 = 600 - margin1.top - margin1.bottom;
+
+// append the svg object to the body of the page
+var svg1 = d3.select("#my_dataviz1")
+  .append("svg")
+    .attr("width", width1 + margin1.left + margin1.right)
+    .attr("height", height1 + margin1.top + margin1.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin1.left + "," + margin1.top + ")");
+
+// Initialize the X axis
+var x1 = d3.scaleBand()
+  .range([ 0, width1 ])
+  .padding(0.2);
+var xAxis1 = svg1.append("g")
+  .attr("transform", "translate(0," + height1 + ")")
+    
+// Initialize the Y axis
+var y1 = d3.scaleLinear()
+  .range([ height1, 0]);
+var yAxis1 = svg1.append("g")
+  .attr("class", "myYaxis")
+
+  // Add X axis label:
+svg1.append("text")
+  .attr("text-anchor", "end")
+  .attr("x", width1/2)
+  .attr("y", height1 + margin1.top+25)
+  .text("Region");
+
+// Y axis label:
+svg1.append("text")
+  .attr("text-anchor", "end")
+  .attr("transform", "rotate(-90)")
+  .attr("y", -margin1.left+40)
+  .attr("x", -margin1.top-50)
+  .text("Average Home Price $");
+
+var tooltip1 = d3.select("body").append("div").attr("class", "toolTip");
+
+
+// A function that create / update the plot for a given variable:
+function update1(selectedVar) {
+
+
+  // Parse the Data
+  d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/master/data/SD_Home_Prices_2020Jun30_region.csv", function(data) {
+
+    // X axis
+    x1.domain(data.map(function(d) { return d.RegionName; }))
+    xAxis1.transition().duration(1000).call(d3.axisBottom(x1))
+	.selectAll("text")
+      .attr("transform", "translate(-10,0)rotate(-45)")
+      .style("text-anchor", "end");
+
+    // Add Y axis
+    y1.domain([0, d3.max(data, function(d) { return +d[selectedVar] }) ]);
+    yAxis1.transition().duration(1000).call(d3.axisLeft(y1));
+
+    var bars1 = svg1.selectAll("rect")
+      .data(data);
+
+    // update bars
+    bars1.enter()
+      .append("rect")
+	  .merge(bars1)
+		.on("mousemove", function(d){
+            tooltip1
+              .style("left", d3.event.pageX - 50 + "px")
+              .style("top", d3.event.pageY - 70 + "px")
+              .style("display", "inline-block")
+              .html((d.RegionName) + ": $" + (+d[selectedVar]));})
+    		.on("mouseout", function(d){ tooltip1.style("display", "none");})
+      .transition()
+      .duration(1000)
+        .attr("x", function(d) { return x1(d.RegionName); })
+        .attr("y", function(d) { return y1(d[selectedVar]); })
+        .attr("width", x1.bandwidth())
+        .attr("height", function(d) { return height1 - y1(d[selectedVar]); })
+        .attr("fill", "blue");
+
+  })
+
+}
+
+// Initialize plot
+update1('Average')
+
+</script>
+<p>
+This bar chart shows the average home price for each region of San Diego County as of June 30, 2020.
+Click on the bottons above the chart to see average home price for different bedroom count.
+</p>
+<!-- <div class="text">Average Home Price for Each Region in San Diego County</div> -->
+</div>
+
+<div class="mySlides fade">
+<div class="numbertext">3 / 5</div>
+<h2>Average Home Price for Different Bedroom Count as of June 30, 2020</h2>
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+<!-- Initialize a select button -->
+<select id="selectButton2"></select>
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz2"></div>
+
+<script>
+
+// set the dimensions and margins of the graph
+var margin2 = {top: 50, right: 100, bottom: 100, left: 100},
+    width2 = 1060 - margin2.left - margin2.right,
+    height2 = 600 - margin2.top - margin2.bottom;
+
+// append the svg object to the body of the page
+var svg2 = d3.select("#my_dataviz2")
+  .append("svg")
+    .attr("width", width2 + margin2.left + margin2.right)
+    .attr("height", height2 + margin2.top + margin2.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin2.left + "," + margin2.top + ")");
+
+// Initialize the X axis
+var x2 = d3.scaleBand()
+  .range([ 0, width2 ])
+  .padding(0.2);
+var xAxis2 = svg2.append("g")
+  .attr("transform", "translate(0," + height2 + ")")
+    
+// Initialize the Y axis
+var y2 = d3.scaleLinear()
+  .range([ height2, 0]);
+var yAxis2 = svg2.append("g")
+  .attr("class", "myYaxis")
+
+var tooltip2 = d3.select("body").append("div").attr("class", "toolTip");
+
+// Parse the Data
+d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/master/data/SD_Home_Prices_2020Jun30_bdrmcnt.csv", function(data) {
+
+// List of groups
+var allGroup2 = data.columns.slice(1,)
+
+// add the options to the button
+d3.select("#selectButton2")
+  .selectAll('myOptions')
+	.data(allGroup2)
+  .enter()
+	.append('option')
+  .text(function (d) { return d; }) // text showed in the menu
+  .attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+// X axis
+x2.domain(data.map(function(d) { return d.Bdrmcnt; }))
+xAxis2.transition().duration(1000).call(d3.axisBottom(x2))
+.selectAll("text")
+  .attr("transform", "translate(-10,0)rotate(-45)")
+  .style("text-anchor", "end");
+
+// Add Y axis
+y2.domain([0, d3.max(data, function(d) { return +d.Average }) ]);
+yAxis2.transition().duration(1000).call(d3.axisLeft(y2));
+
+  // Add X axis label:
+svg2.append("text")
+  .attr("text-anchor", "end")
+  .attr("x", width2/2)
+  .attr("y", height2 + margin2.top+25)
+  .text("Bedroom Count");
+
+// Y axis label:
+svg2.append("text")
+  .attr("text-anchor", "end")
+  .attr("transform", "rotate(-90)")
+  .attr("y", -margin2.left+40)
+  .attr("x", -margin2.top-50)
+  .text("Average Home Price $");
+
+// variable bars2: map data to existing bars
+var bars2 = svg2.selectAll("rect")
+  .data(data);
+
+// update bars
+bars2.enter()
+  .append("rect")
+  .merge(bars2)
+	.on("mousemove", function(d){
+		tooltip2
+		  .style("left", d3.event.pageX - 50 + "px")
+		  .style("top", d3.event.pageY - 70 + "px")
+		  .style("display", "inline-block")
+		  .html((d.Bdrmcnt) + ": $" + (+d.Average));})
+		.on("mouseout", function(d){ tooltip2.style("display", "none");})
+  .transition()
+  .duration(1000)
+	.attr("x", function(d) { return x2(d.Bdrmcnt); })
+	.attr("y", function(d) { return y2(d.Average); })
+	.attr("width", x2.bandwidth())
+	.attr("height", function(d) { return height2 - y2(d.Average); })
+	.attr("fill", "blue");
+
+// A function that create / update the plot for a given variable:
+function update2(selectedGroup) {
+
+    // Add Y axis
+    y2.domain([0, d3.max(data, function(d) { return +d[selectedGroup] }) ]);
+    yAxis2.transition().duration(1000).call(d3.axisLeft(y2));
+
+    // variable bars2: map data to existing bars
+    var bars2 = svg2.selectAll("rect")
+      .data(data);
+
+    // update bars
+    bars2.enter()
+      .append("rect")
+	  .merge(bars2)
+		.on("mousemove", function(d){
+            tooltip2
+              .style("left", d3.event.pageX - 50 + "px")
+              .style("top", d3.event.pageY - 70 + "px")
+              .style("display", "inline-block")
+              .html((d.Bdrmcnt) + ": $" + (+d[selectedGroup]));})
+    		.on("mouseout", function(d){ tooltip2.style("display", "none");})
+      .transition()
+      .duration(1000)
+        .attr("x", function(d) { return x2(d.Bdrmcnt); })
+        .attr("y", function(d) { return y2(d[selectedGroup]); })
+        .attr("width", x2.bandwidth())
+        .attr("height", function(d) { return height2 - y2(d[selectedGroup]); })
+        .attr("fill", "blue");
+
+	}
+
+// When the button is changed, run the updateChart function
+d3.select("#selectButton2").on("change", function(d) {
+	// recover the option that has been chosen
+	var selectedOption2 = d3.select(this).property("value")
+	// run the updateChart function with this selected option
+	update2(selectedOption2)
+})
+
+})
+
+</script>
+<!-- <div class="text">Average Home Price for Different Bedroom Count</div> -->
+<p>
+This bar chart shows the average home price for different bedroom count as of June 30, 2020.
+Select the region in the drop-down list above the chart to see that region's home price.
+</p>
+</div>
+
+<div class="mySlides fade">
+<div class="numbertext">4 / 5</div>
+<h2>Average Home Price Trend Over Last 10 Years</h2>
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+<!-- Initialize a select button -->
+<select id="selectButton3"></select>
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz3"></div>
+
+<script>
+
+// set the dimensions and margins of the graph
+var margin3 = {top: 50, right: 100, bottom: 100, left: 100},
+    width3 = 1060 - margin3.left - margin3.right,
+    height3 = 600 - margin3.top - margin3.bottom;
+
+// append the svg object to the body of the page
+var svg3 = d3.select("#my_dataviz3")
+  .append("svg")
+    .attr("width", width3 + margin3.left + margin3.right)
+    .attr("height", height3 + margin3.top + margin3.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin3.left + "," + margin3.top + ")");
+
+//Read the data
+d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/master/data/SD_Home_Prices_10yrs_history.csv", 
+	// When reading the csv, I must format variables:
+	function(d){
+	return { DateTime : d3.timeParse("%Y/%m/%d")(d.DateTime), RegionName : d.RegionName, HomePrice : d.HomePrice }
+	},
+
+	function(data) {
+
+    // List of groups (here I have one group per column)
+    var allGroup3 = d3.map(data, function(d){return(d.RegionName)}).keys()
+
+    // add the options to the button
+    d3.select("#selectButton3")
+      .selectAll('myOptions')
+     	.data(allGroup3)
+      .enter()
+    	.append('option')
+      .text(function (d) { return d; }) // text showed in the menu
+      .attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+
+    // Add X axis --> it is a date format
+    var x3 = d3.scaleTime()
+      .domain(d3.extent(data, function(d) { return d.DateTime; }))
+      .range([ 0, width3 ]);
+    svg3.append("g")
+      .attr("transform", "translate(0," + height3 + ")")
+      .call(d3.axisBottom(x3).ticks(10));
+
+    // Add Y axis
+	var y3 = d3.scaleLinear().range([height3, 0]);
+	var yAxis3 = d3.axisLeft().scale(y3);
+	svg3.append("g")
+	.attr("class","myYaxis")
+	
+	y3.domain([0, 1000000]);
+    svg3.selectAll(".myYaxis")
+    .call(yAxis3);
+	
+	  // Add X axis label:
+  svg3.append("text")
+      .attr("text-anchor", "end")
+      .attr("x", width3/2)
+      .attr("y", height3 + margin3.top-15)
+      .text("Time");
+
+  // Y axis label:
+  svg3.append("text")
+      .attr("text-anchor", "end")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -margin3.left+40)
+      .attr("x", -margin3.top-50)
+      .text("Average Home Price $");
+	  
+	// This allows to find the closest X index of the mouse:
+	var bisect3 = d3.bisector(function(d) { return d.DateTime; }).left;
+
+	// Create the circle that travels along the curve of chart
+	var focus3_1 = svg3
+	.append('g')
+	.append('circle')
+	  .style("fill", "none")
+	  .attr("stroke", "black")
+	  .attr('r', 8.5)
+	  .style("opacity", 0)
+	var focus3_0 = svg3
+	.append('g')
+	.append('circle')
+	  .style("fill", "none")
+	  .attr("stroke", "black")
+	  .attr('r', 8.5)
+	  .style("opacity", 0)
+	// Create the text that travels along the curve of chart
+	var focusText3_1 = svg3
+	.append('g')
+	.append('text')
+	  .style("opacity", 0)
+	  .attr("text-anchor", "left")
+	  .attr("alignment-baseline", "middle")
+	var focusText3_0 = svg3
+	.append('g')
+	.append('text')
+	  .style("opacity", 0)
+	  .attr("text-anchor", "left")
+	  .attr("alignment-baseline", "middle")
+
+
+    // Initialize line with San Diego County
+	var dataFilter3_1 = data.filter(function(d){return d.RegionName=="San Diego County"})
+	var line3_1 = svg3
+      .append('g')
+      .append("path")
+        .datum(dataFilter3_1)
+        .attr("d", d3.line()
+          .x(function(d) { return x3(d.DateTime) })
+          .y(function(d) { return y3(+d.HomePrice) })
+        )
+        .attr("stroke", "green")
+		.style("stroke-dasharray", ("8, 8"))
+        //.style("stroke-width", 4)
+        .style("fill", "none")
+
+    var line3_2 = svg3
+      .append('g')
+      .append("path")
+        .datum(dataFilter3_1)
+        .attr("d", d3.line()
+          .x(function(d) { return x3(d.DateTime) })
+          .y(function(d) { return y3(+d.HomePrice) })
+        )
+        .attr("stroke", "blue")
+        .style("stroke-width", 4)
+        .style("fill", "none")
+	var timeformat3 = d3.timeFormat("%Y-%m-%d")
+	function mouseover3_1() {
+	focus3_1.style("opacity", 1)
+	focus3_0.style("opacity", 1)
+	focusText3_1.style("opacity",1)
+	focusText3_0.style("opacity",1)
+	}
+
+	function mousemove3_1() {
+	// recover coordinate we need
+	var x3_0 = x3.invert(d3.mouse(this)[0]);
+	var i3 = bisect3(dataFilter3_1, x3_0, 1);
+	selectedData = dataFilter3_1[i3]
+	focus3_1
+	  .attr("cx", x3(selectedData.DateTime))
+	  .attr("cy", y3(selectedData.HomePrice))
+	focus3_0
+	  .attr("cx", x3(selectedData.DateTime))
+	  .attr("cy", height3)
+	focusText3_1
+	  .html("San Diego County: $" + selectedData.HomePrice)
+	  .attr("x", x3(selectedData.DateTime)+15)
+	  .attr("y", y3(selectedData.HomePrice))
+	focusText3_0
+	  .html(timeformat3(selectedData.DateTime))
+	  .attr("x", x3(selectedData.DateTime))
+	  .attr("y", height3-15)
+	}
+	
+	function mouseout3_1() {
+	focus3_1.style("opacity", 0)
+	focus3_0.style("opacity", 0)
+	focusText3_1.style("opacity", 0)
+	focusText3_0.style("opacity", 0)
+	}
+
+	// Create a rect on top of the svg area: this rectangle recovers mouse position
+	svg3
+		.append('rect')
+		.style("fill", "none")
+		.style("pointer-events", "all")
+		.attr('width', width3)
+		.attr('height', height3)
+		.on('mouseover', mouseover3_1)
+		.on('mousemove', mousemove3_1)
+		.on('mouseout', mouseout3_1);
+		
+    // A function that update the chart
+    function update3(selectedGroup) {
+
+      // Create new data with the selection?
+	  var dataFilter3_1 = data.filter(function(d){return d.RegionName=="San Diego County"})
+      var dataFilter3_2 = data.filter(function(d){return d.RegionName==selectedGroup})
+	// Add Y axis
+	y3.domain([d3.min([d3.min(dataFilter3_1, function(d) { return +d.HomePrice; }),d3.min(dataFilter3_2, function(d) { return +d.HomePrice; })])-100000, 
+	100000+d3.max([d3.max(dataFilter3_1, function(d) { return +d.HomePrice; }),d3.max(dataFilter3_2, function(d) { return +d.HomePrice; })])]);
+    svg3.selectAll(".myYaxis")
+	.transition()
+    .duration(1000)
+    .call(yAxis3);
+	
+	var focus3_2 = svg3
+	.append('g')
+	.append('circle')
+	  .style("fill", "none")
+	  .attr("stroke", "black")
+	  .attr('r', 8.5)
+	  .style("opacity", 0)
+	var focusText3_2 = svg3
+	.append('g')
+	.append('text')
+	  .style("opacity", 0)
+	  .attr("text-anchor", "left")
+	  .attr("alignment-baseline", "middle")
+			
+      // Give these new data to update line
+      line3_1
+          .datum(dataFilter3_1)
+          .transition()
+          .duration(1000)
+          .attr("d", d3.line()
+            .x(function(d) { return x3(d.DateTime) })
+            .y(function(d) { return y3(+d.HomePrice) })
+          )
+          .attr("stroke", "green")
+	  
+	  line3_2
+          .datum(dataFilter3_2)
+          .transition()
+          .duration(1000)
+          .attr("d", d3.line()
+            .x(function(d) { return x3(d.DateTime) })
+            .y(function(d) { return y3(+d.HomePrice) })
+          )
+          .attr("stroke", "blue")
+	
+	
+	function mouseover3_2() {
+	focus3_1.style("opacity", 1)
+	focus3_2.style("opacity", 1)
+	focus3_0.style("opacity", 1)
+	focusText3_1.style("opacity",1)
+	focusText3_2.style("opacity",1)
+	focusText3_0.style("opacity",1)
+	}
+	function mousemove3_2() {
+	// recover coordinate we need
+	var x3_0 = x3.invert(d3.mouse(this)[0]);
+	var j3 = bisect3(dataFilter3_2, x3_0, 1);
+	selectedData = dataFilter3_2[j3]
+	var i3 = bisect3(dataFilter3_1, x3_0, 1);
+	averageData = data[i3]
+
+	
+	focus3_1
+	  .attr("cx", x3(averageData.DateTime))
+	  .attr("cy", y3(averageData.HomePrice))
+	focus3_2
+	  .attr("cx", x3(selectedData.DateTime))
+	  .attr("cy", y3(selectedData.HomePrice))
+	focus3_0
+	  .attr("cx", x3(selectedData.DateTime))
+	  .attr("cy", height3)
+	focusText3_1
+	  .html("San Diego County: $" + averageData.HomePrice)
+	  .attr("x", x3(averageData.DateTime)+15)
+	  .attr("y", y3(averageData.HomePrice))
+	focusText3_2
+	  .html(selectedData.RegionName + ": $" + selectedData.HomePrice)
+	  .attr("x", x3(selectedData.DateTime)+15)
+	  .attr("y", y3(selectedData.HomePrice))
+	focusText3_0
+	  .html(timeformat3(selectedData.DateTime))
+	  .attr("x", x3(selectedData.DateTime))
+	  .attr("y", height3-15)
+	}
+	function mouseout3_2() {
+	focus3_1.style("opacity", 0)
+	focus3_2.style("opacity", 0)
+	focus3_0.style("opacity", 0)
+	focusText3_1.style("opacity", 0)
+	focusText3_2.style("opacity", 0)
+	focusText3_0.style("opacity", 0)
+	}
+		svg3
+		.append('rect')
+		.style("fill", "none")
+		.style("pointer-events", "all")
+		.attr('width', width3)
+		.attr('height', height3)
+		.on('mouseover', mouseover3_2)
+		.on('mousemove', mousemove3_2)
+		.on('mouseout', mouseout3_2);
+
+    }
+	
+
+    // When the button is changed, run the updateChart function
+    d3.select("#selectButton3").on("change", function(d) {
+        // recover the option that has been chosen
+        var selectedOption3 = d3.select(this).property("value")
+        // run the updateChart function with this selected option
+        update3(selectedOption3)
+    })
+
+})
+
+
+</script>
+<p>
+This plot shows the average home price trend over the last 10 years (June 2010 ~ June 2020).
+Select the region in the drop-down list above the chart to see that region's trend and compare it with San Diego County's.
+</p>
+<!-- <div class="text">Average Home Price Trend Over Last 10 Years</div> -->
+</div>
+
+<div class="mySlides fade">
+<div class="numbertext">5 / 5</div>
+<h2>Average Home Price Monthly Change Over Last 10 Years</h2>
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+<!-- Initialize a select button -->
+<select id="selectButton4"></select>
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz4"></div>
+
+<script>
+
+// set the dimensions and margins of the graph
+var margin4 = {top: 50, right: 100, bottom: 100, left: 100},
+    width4 = 1060 - margin4.left - margin4.right,
+    height4 = 600 - margin4.top - margin4.bottom;
+
+// append the svg object to the body of the page
+var svg4 = d3.select("#my_dataviz4")
+  .append("svg")
+    .attr("width", width4 + margin4.left + margin4.right)
+    .attr("height", height4 + margin4.top + margin4.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin4.left + "," + margin4.top + ")");
+
+//Read the data
+d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/master/data/SD_Home_Prices_10yrs_history.csv", 
+	// When reading the csv, I must format variables:
+	function(d){
+	return { DateTime : d3.timeParse("%Y/%m/%d")(d.DateTime), RegionName : d.RegionName, HomePrice : d.HomePrice, MonthlyChange:d.MonthlyChange }
+	},
+
+	function(data) {
+
+    // List of groups (here I have one group per column)
+    var allGroup4 = d3.map(data, function(d){return(d.RegionName)}).keys()
+
+    // add the options to the button
+    d3.select("#selectButton4")
+      .selectAll('myOptions')
+     	.data(allGroup4)
+      .enter()
+    	.append('option')
+      .text(function (d) { return d; }) // text showed in the menu
+      .attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+    // Add X axis --> it is a date format
+    var x4 = d3.scaleTime()
+      .domain(d3.extent(data, function(d) { return d.DateTime; }))
+      .range([ 0, width4 ]);
+    svg4.append("g")
+      .attr("transform", "translate(0," + height4 + ")")
+      .call(d3.axisBottom(x4).ticks(10));
+
+    // Add Y axis
+	var y4 = d3.scaleLinear().range([height4, 0]);
+	var yAxis4 = d3.axisLeft().scale(y4);
+	svg4.append("g")
+	.attr("class","myYaxis")
+	
+	y4.domain([-3.5, 3.5]);
+    svg4.selectAll(".myYaxis")
+    .call(yAxis4);
+	
+	  // Add X axis label:
+  svg4.append("text")
+      .attr("text-anchor", "end")
+      .attr("x", width4/2)
+      .attr("y", height4 + margin4.top-15)
+      .text("Time");
+
+  // Y axis label:
+  svg4.append("text")
+      .attr("text-anchor", "end")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -margin4.left+40)
+      .attr("x", -margin4.top-50)
+      .text("Home Price Monthly Change %");
+	  
+	// This allows to find the closest X index of the mouse:
+	var bisect4 = d3.bisector(function(d) { return d.DateTime; }).left;
+
+	// Create the circle that travels along the curve of chart
+	var focus4_1 = svg4
+	.append('g')
+	.append('circle')
+	  .style("fill", "none")
+	  .attr("stroke", "black")
+	  .attr('r', 8.5)
+	  .style("opacity", 0)
+	var focus4_0 = svg4
+	.append('g')
+	.append('circle')
+	  .style("fill", "none")
+	  .attr("stroke", "black")
+	  .attr('r', 8.5)
+	  .style("opacity", 0)
+	// Create the text that travels along the curve of chart
+	var focusText4_1 = svg4
+	.append('g')
+	.append('text')
+	  .style("opacity", 0)
+	  .attr("text-anchor", "left")
+	  .attr("alignment-baseline", "middle")
+	var focusText4_0 = svg4
+	.append('g')
+	.append('text')
+	  .style("opacity", 0)
+	  .attr("text-anchor", "left")
+	  .attr("alignment-baseline", "middle")
+	  
+    // Initialize line with first group of the list
+	var dataFilter4_1 = data.filter(function(d){return d.RegionName=="San Diego County"})
+	var line4_1 = svg4
+      .append('g')
+      .append("path")
+        .datum(dataFilter4_1)
+        .attr("d", d3.line()
+          .x(function(d) { return x4(d.DateTime) })
+          .y(function(d) { return y4(+d.MonthlyChange) })
+        )
+        .attr("stroke", "green")
+		.style("stroke-dasharray", ("8, 8"))
+        //.style("stroke-width", 4)
+        .style("fill", "none")
+
+    var line4_2 = svg4
+      .append('g')
+      .append("path")
+        .datum(dataFilter4_1)
+        .attr("d", d3.line()
+          .x(function(d) { return x4(d.DateTime) })
+          .y(function(d) { return y4(+d.MonthlyChange) })
+        )
+        .attr("stroke", "blue")
+        .style("stroke-width", 4)
+        .style("fill", "none")
+		
+	var line4_0 = svg4
+      .append('g')
+      .append("path")
+        .datum(dataFilter4_1)
+        .attr("d", d3.line()
+          .x(function(d) { return x4(d.DateTime) })
+          .y(function(d) { return y4(0) })
+        )
+        .attr("stroke", "black" )
+		.style("stroke-dasharray", ("4, 4"))
+        //.style("stroke-width", 4)
+        .style("fill", "none")
+	
+	var timeformat4 = d3.timeFormat("%Y-%m-%d")
+	function mouseover4_1() {
+	focus4_1.style("opacity", 1)
+	focus4_0.style("opacity", 1)
+	focusText4_1.style("opacity",1)
+	focusText4_0.style("opacity",1)
+	}
+
+	function mousemove4_1() {
+	// recover coordinate we need
+	var x4_0 = x4.invert(d3.mouse(this)[0]);
+	var i4 = bisect4(dataFilter4_1, x4_0, 1);
+	selectedData = dataFilter4_1[i4]
+	focus4_1
+	  .attr("cx", x4(selectedData.DateTime))
+	  .attr("cy", y4(selectedData.MonthlyChange))
+	focus4_0
+	  .attr("cx", x4(selectedData.DateTime))
+	  .attr("cy", height4)
+	focusText4_1
+	  .html("San Diego County: " + selectedData.MonthlyChange +"%")
+	  .attr("x", x4(selectedData.DateTime)+15)
+	  .attr("y", y4(selectedData.MonthlyChange))
+	focusText4_0
+	  .html(timeformat4(selectedData.DateTime))
+	  .attr("x", x4(selectedData.DateTime))
+	  .attr("y", height4-15)
+	}
+	
+	function mouseout4_1() {
+	focus4_1.style("opacity", 0)
+	focus4_0.style("opacity", 0)
+	focusText4_1.style("opacity", 0)
+	focusText4_0.style("opacity", 0)
+	}
+
+	// Create a rect on top of the svg area: this rectangle recovers mouse position
+	svg4
+		.append('rect')
+		.style("fill", "none")
+		.style("pointer-events", "all")
+		.attr('width', width4)
+		.attr('height', height4)
+		.on('mouseover', mouseover4_1)
+		.on('mousemove', mousemove4_1)
+		.on('mouseout', mouseout4_1);
+		
+
+
+    // A function that update the chart
+    function update4(selectedGroup) {
+
+      // Create new data with the selection?
+	  var dataFilter4_1 = data.filter(function(d){return d.RegionName=="San Diego County"})
+      var dataFilter4_2 = data.filter(function(d){return d.RegionName==selectedGroup})
+	// Add Y axis
+	y4.domain([d3.min([d3.min(dataFilter4_1, function(d) { return +d.MonthlyChange; }),d3.min(dataFilter4_2, function(d) { return +d.MonthlyChange; })])-0.2, 
+	0.2+d3.max([d3.max(dataFilter4_1, function(d) { return +d.MonthlyChange; }),d3.max(dataFilter4_2, function(d) { return +d.MonthlyChange; })])]);
+    svg4.selectAll(".myYaxis")
+	.transition()
+    .duration(1000)
+    .call(yAxis4);
+	
+	var focus4_2 = svg4
+	.append('g')
+	.append('circle')
+	  .style("fill", "none")
+	  .attr("stroke", "black")
+	  .attr('r', 8.5)
+	  .style("opacity", 0)
+	var focusText4_2 = svg4
+	.append('g')
+	.append('text')
+	  .style("opacity", 0)
+	  .attr("text-anchor", "left")
+	  .attr("alignment-baseline", "middle")
+
+      line4_1
+          .datum(dataFilter4_1)
+          .transition()
+          .duration(1000)
+          .attr("d", d3.line()
+            .x(function(d) { return x4(d.DateTime) })
+            .y(function(d) { return y4(+d.MonthlyChange) })
+          )
+          .attr("stroke", "green")
+	  
+	  line4_2
+          .datum(dataFilter4_2)
+          .transition()
+          .duration(1000)
+          .attr("d", d3.line()
+            .x(function(d) { return x4(d.DateTime) })
+            .y(function(d) { return y4(+d.MonthlyChange) })
+          )
+          .attr("stroke", "blue")
+	
+	line4_0
+		.transition()
+        .duration(1000)
+        .attr("d", d3.line()
+          .x(function(d) { return x4(d.DateTime) })
+          .y(function(d) { return y4(0) })
+        )
+        .attr("stroke", "black" )
+		.style("stroke-dasharray", ("4, 4"))
+        //.style("stroke-width", 4)
+        .style("fill", "none")
+	
+	function mouseover4_2() {
+	focus4_1.style("opacity", 1)
+	focus4_2.style("opacity", 1)
+	focus4_0.style("opacity", 1)
+	focusText4_1.style("opacity",1)
+	focusText4_2.style("opacity",1)
+	focusText4_0.style("opacity",1)
+	}
+	function mousemove4_2() {
+	// recover coordinate we need
+	var x4_0 = x4.invert(d3.mouse(this)[0]);
+	var j4 = bisect4(dataFilter4_2, x4_0, 1);
+	selectedData = dataFilter4_2[j4]
+	var i4 = bisect4(dataFilter4_1, x4_0, 1);
+	averageData = data[i4]
+
+	
+	focus4_1
+	  .attr("cx", x4(averageData.DateTime))
+	  .attr("cy", y4(averageData.MonthlyChange))
+	focus4_2
+	  .attr("cx", x4(selectedData.DateTime))
+	  .attr("cy", y4(selectedData.MonthlyChange))
+	focus4_0
+	  .attr("cx", x4(selectedData.DateTime))
+	  .attr("cy", height4)
+	focusText4_1
+	  .html("San Diego County: " + averageData.MonthlyChange+"%")
+	  .attr("x", x4(averageData.DateTime)+15)
+	  .attr("y", y4(averageData.MonthlyChange))
+	focusText4_2
+	  .html(selectedData.RegionName + ": " + selectedData.MonthlyChange+"%")
+	  .attr("x", x4(selectedData.DateTime)+15)
+	  .attr("y", y4(selectedData.MonthlyChange))
+	focusText4_0
+	  .html(timeformat4(selectedData.DateTime))
+	  .attr("x", x4(selectedData.DateTime))
+	  .attr("y", height4-15)
+	}
+	function mouseout4_2() {
+	focus4_1.style("opacity", 0)
+	focus4_2.style("opacity", 0)
+	focus4_0.style("opacity", 0)
+	focusText4_1.style("opacity", 0)
+	focusText4_2.style("opacity", 0)
+	focusText4_0.style("opacity", 0)
+	}
+		svg4
+		.append('rect')
+		.style("fill", "none")
+		.style("pointer-events", "all")
+		.attr('width', width4)
+		.attr('height', height4)
+		.on('mouseover', mouseover4_2)
+		.on('mousemove', mousemove4_2)
+		.on('mouseout', mouseout4_2);
+
+    }
+	
+
+    // When the button is changed, run the updateChart function
+    d3.select("#selectButton4").on("change", function(d) {
+        // recover the option that has been chosen
+        var selectedOption4 = d3.select(this).property("value")
+        // run the updateChart function with this selected option
+        update4(selectedOption4)
+    })
+
+})
+
+
+</script>
+<p>
+This plot shows the average home price monthly change over the last 10 years (June 2010 ~ June 2020).
+Select the region in the drop-down list above the chart to see that region's monthly change and compare it with San Diego County's.
+</p>
+<!-- <div class="text">Average Home Price Monthly Change Over Last 10 Years</div> -->
+</div>
+
+
+<a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+<a class="next" onclick="plusSlides(1)">&#10095;</a>
+
+</div>
+<br>
+
+<div style="text-align:center">
+  <span class="dot" onclick="currentSlide(1)"></span> 
+  <span class="dot" onclick="currentSlide(2)"></span> 
+  <span class="dot" onclick="currentSlide(3)"></span>
+  <span class="dot" onclick="currentSlide(4)"></span> 
+  <span class="dot" onclick="currentSlide(5)"></span> 
+</div>
+
+<script>
+var slideIndex = 1;
+showSlides(slideIndex);
+
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
+
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+  var i;
+  var slides = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("dot");
+  if (n > slides.length) {slideIndex = 1}    
+  if (n < 1) {slideIndex = slides.length}
+  for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";  
+  }
+  for (i = 0; i < dots.length; i++) {
+      dots[i].className = dots[i].className.replace(" active", "");
+  }
+  slides[slideIndex-1].style.display = "block";  
+  dots[slideIndex-1].className += " active";
+}
+</script>
+
+</body>
+</html> 
