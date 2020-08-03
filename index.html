@@ -425,11 +425,11 @@ else
 
 	}
 
-// When the button is changed, run the updateChart function
+// When the button is changed, run the update2 function
 d3.select("#selectButton2").on("change", function(d) {
 	// recover the option that has been chosen
 	var selectedOption2 = d3.select(this).property("value")
-	// run the updateChart function with this selected option
+	// run the update2 function with this selected option
 	update2(selectedOption2)
 })
 
@@ -472,14 +472,13 @@ var svg3 = d3.select("#my_dataviz3")
 
 //Read the data
 d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/master/data/SD_Home_Prices_10yrs_history.csv", 
-	// When reading the csv, I must format variables:
 	function(d){
 	return { DateTime : d3.timeParse("%Y/%m/%d")(d.DateTime), RegionName : d.RegionName, HomePrice : d.HomePrice }
 	},
 
 	function(data) {
 
-    // List of groups (here I have one group per column)
+    // List of groups
     var allGroup3 = d3.map(data, function(d){return(d.RegionName)}).keys()
 
     // add the options to the button
@@ -593,7 +592,6 @@ d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/ma
 	}
 
 	function mousemove3_1() {
-	// recover coordinate we need
 	var x3_0 = x3.invert(d3.mouse(this)[0]);
 	var i3 = bisect3(dataFilter3_1, x3_0, 1);
 	selectedData = dataFilter3_1[i3]
@@ -620,7 +618,6 @@ d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/ma
 	focusText3_0.style("opacity", 0)
 	}
 
-	// Create a rect on top of the svg area: this rectangle recovers mouse position
 	svg3
 		.append('rect')
 		.style("fill", "none")
@@ -649,7 +646,6 @@ if (selectedGroup=="San Diego County")
 else
 {annotationText3.style("opacity",0)}
 
-      // Create new data with the selection?
 	  var dataFilter3_1 = data.filter(function(d){return d.RegionName=="San Diego County"})
       var dataFilter3_2 = data.filter(function(d){return d.RegionName==selectedGroup})
 	// Add Y axis
@@ -705,7 +701,6 @@ else
 	focusText3_0.style("opacity",1)
 	}
 	function mousemove3_2() {
-	// recover coordinate we need
 	var x3_0 = x3.invert(d3.mouse(this)[0]);
 	var j3 = bisect3(dataFilter3_2, x3_0, 1);
 	selectedData = dataFilter3_2[j3]
@@ -756,11 +751,11 @@ else
     }
 	
 
-    // When the button is changed, run the updateChart function
+    // When the button is changed, run the update3 function
     d3.select("#selectButton3").on("change", function(d) {
         // recover the option that has been chosen
         var selectedOption3 = d3.select(this).property("value")
-        // run the updateChart function with this selected option
+        // run the update3 function with this selected option
         update3(selectedOption3)
     })
 
@@ -804,14 +799,13 @@ var svg4 = d3.select("#my_dataviz4")
 
 //Read the data
 d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/master/data/SD_Home_Prices_10yrs_history.csv", 
-	// When reading the csv, I must format variables:
 	function(d){
 	return { DateTime : d3.timeParse("%Y/%m/%d")(d.DateTime), RegionName : d.RegionName, HomePrice : d.HomePrice, MonthlyChange:d.MonthlyChange }
 	},
 
 	function(data) {
 
-    // List of groups (here I have one group per column)
+    // List of groups
     var allGroup4 = d3.map(data, function(d){return(d.RegionName)}).keys()
 
     // add the options to the button
@@ -888,7 +882,6 @@ d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/ma
 	  .attr("text-anchor", "left")
 	  .attr("alignment-baseline", "middle")
 	  
-    // Initialize line with first group of the list
 	var dataFilter4_1 = data.filter(function(d){return d.RegionName=="San Diego County"})
 	var line4_1 = svg4
       .append('g')
@@ -937,7 +930,6 @@ d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/ma
 	}
 
 	function mousemove4_1() {
-	// recover coordinate we need
 	var x4_0 = x4.invert(d3.mouse(this)[0]);
 	var i4 = bisect4(dataFilter4_1, x4_0, 1);
 	selectedData = dataFilter4_1[i4]
@@ -964,7 +956,6 @@ d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/ma
 	focusText4_0.style("opacity", 0)
 	}
 
-	// Create a rect on top of the svg area: this rectangle recovers mouse position
 	svg4
 		.append('rect')
 		.style("fill", "none")
@@ -996,7 +987,6 @@ d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/ma
 	else
 	{annotationText4.style("opacity",0)}
 
-      // Create new data with the selection?
 	  var dataFilter4_1 = data.filter(function(d){return d.RegionName=="San Diego County"})
       var dataFilter4_2 = data.filter(function(d){return d.RegionName==selectedGroup})
 	// Add Y axis
@@ -1062,7 +1052,6 @@ d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/ma
 	focusText4_0.style("opacity",1)
 	}
 	function mousemove4_2() {
-	// recover coordinate we need
 	var x4_0 = x4.invert(d3.mouse(this)[0]);
 	var j4 = bisect4(dataFilter4_2, x4_0, 1);
 	selectedData = dataFilter4_2[j4]
@@ -1113,11 +1102,11 @@ d3.csv("https://raw.githubusercontent.com/leonwang8088/leonwang8088.github.io/ma
     }
 	
 
-    // When the button is changed, run the updateChart function
+    // When the button is changed, run the update4 function
     d3.select("#selectButton4").on("change", function(d) {
         // recover the option that has been chosen
         var selectedOption4 = d3.select(this).property("value")
-        // run the updateChart function with this selected option
+        // run the update4 function with this selected option
         update4(selectedOption4)
     })
 
